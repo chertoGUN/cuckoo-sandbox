@@ -24,7 +24,7 @@ source /etc/os-release
 # Configuration variables. Tailor to your environment
 CUCKOO_GUEST_IMAGE="/tmp/W7-01.ova"
 CUCKOO_GUEST_NAME="vm"
-CUCKOO_GUEST_IP="192.168.87.15"
+CUCKOO_GUEST_IP="192.168.10.15"
 INTERNET_INT_NAME="eth0"
 
 # Base variables. Only change these if you know what you are doing...
@@ -41,8 +41,8 @@ YARA_REPO="https://github.com/plusvic/yara"
 VIRTUALBOX_REP="deb http://download.virtualbox.org/virtualbox/debian $RELEASE contrib"
 
 VIRTUALBOX_INT_NAME="vboxnet0"
-VIRTUALBOX_INT_NETWORK="192.168.87.0/24"
-VIRTUALBOX_INT_ADDR="192.168.87.1"
+VIRTUALBOX_INT_NETWORK="192.168.10.0/24"
+VIRTUALBOX_INT_ADDR="192.168.10.1"
 VIRTUALBOX_INT_SUBNET="255.255.255.0"
 
 LOG=$(mktemp)

@@ -201,14 +201,13 @@ build_volatility(){
 prepare_virtualbox(){
     cd ${TMPDIR}
     echo ${VIRTUALBOX_REP} |$SUDO tee /etc/apt/sources.list.d/virtualbox.list
-    wget -O - https://www.virtualbox.org/download/oracle_vbox.asc | $SUDO apt-key add -
+    wget -O - https://www.virtualbox.org/download/oracle_vbox_2016.asc | $SUDO apt-key add -
     pgrep virtualbox && return 1
     pgrep VBox && return 1 
     return 0
 }
 
 install_packages(){
-    $SUDO wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | $SUDO apt-key add -
     $SUDO apt-get update
     $SUDO apt-get install -y ${packages["${RELEASE}"]}
     $SUDO apt-get install -y $CUSTOM_PKGS

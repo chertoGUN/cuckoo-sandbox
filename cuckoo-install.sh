@@ -232,7 +232,7 @@ run_cuckoo_community(){
 # - Installed Cuckoo Agent
 # - Disabled UAC, AV, Updates, Firewall
 # - Any other software that is to be installed
-# - IP settings: 192.168.87.15 - 255.255.255.0 - GW:192.168.87.1 DNS:192.168.87.1
+# - IP settings: 192.168.10.15 - 255.255.255.0 - GW:192.168.10.1 DNS:192.168.10.1
 
 import_virtualbox_vm(){
     runuser -l $CUCKOO_USER -c "vboxmanage import ${CUCKOO_GUEST_IMAGE}"

@@ -35,7 +35,7 @@ CUCKOO_USER="cuckoo"
 CUCKOO_PASSWD="cuckoo"
 CUSTOM_PKGS=""
 ORIG_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}"  )" && pwd  )
-VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/2.4/volatility-2.4.tar.gz"
+VOLATILITY_URL="http://downloads.volatilityfoundation.org/releases/2.6/volatility-2.6.zip"
 YARA_REPO="https://github.com/plusvic/yara"
 
 VIRTUALBOX_REP="deb http://download.virtualbox.org/virtualbox/debian $RELEASE contrib"
@@ -51,7 +51,7 @@ UPGRADE=true
 declare -a packages
 declare -a python_packages
 
-packages="git python python-pip libffi-dev libssl-dev python-virtualenv python-setuptools libjpeg-dev zlib1g-dev swig postgresql libpq-dev tcpdump apparmor-utils libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk build-essential libssl-dev libffi-dev python-dev libssl-dev libjansson-dev virtualbox mongodb"
+packages="git python python-pip libffi-dev libssl-dev python-virtualenv python-setuptools libjpeg-dev zlib1g-dev swig postgresql libpq-dev tcpdump apparmor-utils libtiff5-dev libjpeg8-dev zlib1g-dev libfreetype6-dev liblcms2-dev libwebp-dev tcl8.6-dev tk8.6-dev python-tk build-essential libssl-dev libffi-dev unzip python-dev libssl-dev libjansson-dev virtualbox-6.0 mongodb"
 #python_packages="pip setuptools cuckoo distorm3 yara-python"
 python_packages="pip setuptools cuckoo distorm3 yara-python==3.6.3 pycrypto"
 
@@ -191,8 +191,8 @@ build_yara(){
 
 build_volatility(){
     wget $VOLATILITY_URL
-    tar xvf volatility-2.4.tar.gz
-    cd volatility-2.4/
+    unzip volatility-2.6.zip
+    cd volatility-master/
     $SUDO python setup.py build
     $SUDO python setup.py install
     return 0

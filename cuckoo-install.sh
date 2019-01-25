@@ -208,6 +208,7 @@ prepare_virtualbox(){
 }
 
 install_packages(){
+    $SUDO wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
     $SUDO apt-get update
     $SUDO apt-get install -y ${packages["${RELEASE}"]}
     $SUDO apt-get install -y $CUSTOM_PKGS

@@ -290,7 +290,7 @@ create_cuckoo_startup_scripts(){
     $SUDO echo "runuser -l cuckoo -c 'cuckoo' &" >> /root/cuckoo-start.sh
     $SUDO echo "runuser -l cuckoo -c 'cuckoo web runserver 0.0.0.0:8000' &" >> /root/cuckoo-start.sh
     $SUDO echo "runuser -l cuckoo -c 'cuckoo api --host 0.0.0.0 --port 8090' &" >> /root/cuckoo-start.sh
-    $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n\/root\/cuckoo-start.sh\n/ }" /etc/rc.local
+#    $SUDO sed -i "/# By default this script does nothing./ { N; s/# By default this script does nothing./&\n\/root\/cuckoo-start.sh\n/ }" /etc/rc.local
 
     $SUDO chmod +x /root/cuckoo-start.sh
     $SUDO chmod +x /root/cuckoo-kill.sh

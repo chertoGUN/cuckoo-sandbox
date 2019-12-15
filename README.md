@@ -1,4 +1,8 @@
-These notes are originally sourced from [here](https://gist.github.com/braimee/bf570a62f53f71bad1906c6e072ce993#file-mostly_painless_cuckoo_sandbox_install-md) with updates as applicable
+These notes are originally sourced from [here](https://gist.github.com/braimee/bf570a62f53f71bad1906c6e072ce993#file-mostly_painless_cuckoo_sandbox_install-md) with updates as applicable  
+
+The shell script is originally sources from [here](https://github.com/NVISO-BE/SEC599/blob/master/cuckoo-install.sh)  
+
+With thanks to all contributors!
 
 # How to Build a Cuckoo Sandbox Malware Analysis System
 I had a heck of a time getting a Cuckoo sandbox running, and below I hope to help you get one up and running relatively quickly by detailing out the steps and gotchas I stumbled across along the way.  I mention this in the references at the end of this gist, but what you see here is *heavily* influenced by [this article from Nviso](https://blog.nviso.be/2018/04/12/painless-cuckoo-sandbox-installation/)
@@ -22,7 +26,7 @@ apt-get update && apt-get upgrade -y
 4. Create a `/cuckoo` folder which you'll use later for the Cuckoo install script and vulnerable VM.
 
 ## Build your base Windows VM
-~~Inside ESXi spin up a new Windows 10 Pro 64-bit VM (get the ISO [here](https://www.microsoft.com/en-us/software-download/windows10))~~ Update: I learned Windows 10 is not supported, so use Windows 7 instead with the following properties:
+Use Windows 7 instead with the following properties:
 
 * 40GB hard drive
 * 1 proc
@@ -58,10 +62,13 @@ Alternatively, you can use the **NetSh Advfirewall set allprofiles state off** c
  * Type `cd scripts` and then run `easy_install pillow`
 
 ### Install additional apps
-The Cuckoo [requirements](http://docs.cuckoosandbox.org/en/latest/installation/guest/requirements/) don't list too much detail except that you may want to install additional things like browsers, PDF readers, etc.  Some suggestions:
+The Cuckoo [requirements](http://docs.cuckoosandbox.org/en/latest/installation/guest/requirements/) don't list too much detail except that you may want to install additional things like browsers, PDF readers, etc. 
 
-* Adobe Reader
-* An old version of Office (I used 2013 with no updates)
+You can install Chocolatey and then:
+
+`cinst googlechrome, adobereader, flashplayerplugin, jre8, 7zip.install, vlc`
+
+The install Office 2013 with a valid serial key. 
 
 When finished, shut down the VM.
 
@@ -74,49 +81,32 @@ Within ESXi, export the .OVA file of the Windows VM.  From the [vSphere Client](
 4. Using a file transfer program like [FileZilla](https://filezilla-project.org/), transfer the .OVA file to your Ubuntu VM and store it in the `/cuckoo` folder.
 
 ## Install Cuckoautoinstall
-1. On the Ubuntu desktop, login as root and download the [cuckoo-install](https://github.com/NVISO-BE/SEC599/blob/master/cuckoo-install.sh) script to `/cuckoo`.
+1. On the Ubuntu desktop, login as root and download the `cuckoo-install.sh` script to `/cuckoo`.
 
 2. Open it with `nano cuckoo-install.sh` and edit the following values as necessary:
 
 * `CUCKOO_GUEST_IMAGE` should point to the full path of your .OVA file
-* `CUCKOO_GUEST_NAME` should be the name of the VM as it appeared in your ESXi console
-* `CUCKOO_GUEST_IP` can remain at the default, and in fact, I'd recommend you *not* change it.  I once tried to use `192.168.168.168` because that was easier to remember, but then a bunc hof stuff broke.
+* `CUCKOO_GUEST_NAME` should be the name of the VM as it appeared in your ESXi console. NB when you export a VM this sometimes gets renamed to `vm`.  
+* `CUCKOO_GUEST_IP` can remain at the default, and in fact, I'd recommend you *not* change it.  
 * `INTERNET_INT_NAME` should be the name of your LAN interface on the Ubuntu box - run `ifconfig` to figure out what that is.
 
 This area of my `cuckoo-install.sh` looked like this:
 
 ````
 CUCKOO_GUEST_IMAGE="/cuckoo/WIN10.ova"
-CUCKOO_GUEST_NAME="WIN10"
+CUCKOO_GUEST_NAME="vm"
 CUCKOO_GUEST_IP="192.168.87.15"
-INTERNET_INT_NAME="ens160"
+INTERNET_INT_NAME="ens33"
 ````
 
-3. Now run the script:
+3. Take a VM snapshot then run the script:
 
 ````
 ./cuckoo-install.sh --verbose
 ````
 By adding the `--verbose` option you should be able to troubleshoot anything that doesn't work right (basically you want all green checks :-)
 
-One issue I've run into sometimes is after getting through the script, there will be some errors I have to cleanup or a reboot I need to do, etc., and then next time I run the script I'll get an error like:
-
-````
-Virtualbox is running, please close it
-````
-
-Sometimes I can get around that by killing the service manually and running the script again:
-
-````
-sudo service vboxdrv stop
-./cuckoo-install.sh --verbose
-````
-In a recent install though, I had to completely nuke Vbox from the system before I could re-run the script:
-
-````
-sudo apt-get remove virtualbox-* --purge -y
-./cuckoo-install.sh --verbose
-````
+If the script breaks it's easier to simply roll back the VM snapshot then troubleshoot directly. This way there is no legacy installed 
 
 ## Prepare the freshly imported OVA file for malware analysis
 Now that the OVA file is imported into VirtualBox, we need to tweak it a little further so that the Ubuntu VM can talk to it properly when doing malware analysis.
